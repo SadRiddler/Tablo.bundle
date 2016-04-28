@@ -20,15 +20,15 @@ TabloAPI = tablohelpers.TabloAPI
 # plexlog = SharedCodeService.TabloHelpers.plexlog
 
 '''#### Define Global Vars ####'''
-TITLE = 'TabloX'
+TITLE = 'Tablo'
 ART = 'TabloProduct_FrontRight-default.jpg'
 ICON = 'tablo_icon_focus_hd.png'
 NOTV_ICON = 'no_tv_110x150.jpg'
 ICON_PREFS = 'icon_settings_hd.jpg'
 SHOW_THUMB = 'no_tv_110x150.jpg'
 PREFIX = '/video/Tablo'
-LOG_PREFIX = "***TabloTV RBW: "
-VERSION = "0.992a"
+LOG_PREFIX = "***TabloTV: "
+VERSION = "0.992"
 FOLDERS_COUNT_IN_TITLE = True  # Global VAR used to enable counts on titles
 debugit = True
 
