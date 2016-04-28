@@ -20,15 +20,15 @@ TabloAPI = tablohelpers.TabloAPI
 # plexlog = SharedCodeService.TabloHelpers.plexlog
 
 '''#### Define Global Vars ####'''
-TITLE = 'Tablo'
+TITLE = 'TabloX'
 ART = 'TabloProduct_FrontRight-default.jpg'
 ICON = 'tablo_icon_focus_hd.png'
 NOTV_ICON = 'no_tv_110x150.jpg'
 ICON_PREFS = 'icon_settings_hd.jpg'
 SHOW_THUMB = 'no_tv_110x150.jpg'
 PREFIX = '/video/Tablo'
-LOG_PREFIX = "***TabloTV: "
-VERSION = "0.992"
+LOG_PREFIX = "***TabloTV RBW: "
+VERSION = "0.992a"
 FOLDERS_COUNT_IN_TITLE = True  # Global VAR used to enable counts on titles
 debugit = True
 
@@ -1347,6 +1347,30 @@ def loadData():
 
 
 '''#########################################
+    Name: getExtendedTitle()
+
+    Parameters: name: String, airdate: String, en: Integer, sn: Integer
+
+    Purpose: Add month/day and season/episode number to generic title
+
+    Returns: String
+
+    Notes:
+#########################################'''
+
+def getExtendedTitle(name, airdate, en=0, sn=0):
+    dt = Datetime.ParseDate(airdate)
+    mmdd = dt.strftime("%m/%d")
+    if sn != 0 and en != 0:
+        se = ' s{0}e{1}'.format(sn,en)
+    else:
+        se = ''
+    title = '{0} ({1}{2})'.format(name,mmdd,se)
+    Log(LOG_PREFIX + 'ext title = ' + title)
+    return title
+
+
+'''#########################################
     Name: getEpisodeDict()
 
     Parameters: None
@@ -1409,6 +1433,13 @@ def getEpisodeDict(ipaddress, episodeID, UseMeta):
             if 'title' in seriesinfo:
                 recordingDict['showname'] = seriesinfo['title']
                 recordingDict['title'] = seriesinfo['title']
+                # if we have the air date, then add it to the generic title
+                # since it helps distinguish shows with no distinct episode title
+                # like 'NBC Nightly News' and no default date ordering of episodes
+                if 'jsonForClient' in recordinginfo[root]:
+                    episodeinfo = recordinginfo[root]['jsonForClient']
+                    if 'airDate' in episodeinfo:
+                        recordingDict['title'] = getExtendedTitle(seriesinfo['title'], episodeinfo['airDate'])
             else:
                 recordingDict['showname'] = ''
             recordingDict['seriesdesc'] = ''
