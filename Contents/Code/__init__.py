@@ -290,6 +290,7 @@ def scheduled(title):
         if 'images' in airingData:
             imagedid = airingData['images'][0]['imageID']
         plexlog('airingdata loop', airingData)
+        plexlog('unixtimestarted', str(Datetime.FromTimestamp(unixtimestarted)))
         # All commented out are set in TabloLive.pys helpers
         oc.add(
                 # TVShowObject(
@@ -305,7 +306,7 @@ def scheduled(title):
                         thumb=Resource.ContentsOfURLWithFallback(
                             url='http://' + ipaddress + ':18080/stream/thumb?id=' + str(imagedid), fallback=NOTV_ICON),
                         # art= Resource.ContentsOfURLWithFallback(url=airingData['art'], fallback=ART),
-                        tagline=unixtimestarted
+                        tagline=str(Datetime.FromTimestamp(unixtimestarted))
                         # duration = airingData['duration']  #description = airingData['description']
                 )
         )
@@ -1016,7 +1017,8 @@ def episodes(title, seriesid, seasonnum):
 
             except Exception as e:
                 Log(" Failed on episode " + str(e))
-    oc.objects.sort(key=lambda obj: obj.index)
+    # sort by reverse air date, newest first
+    oc.objects.sort(key=lambda obj: obj.originally_available_at, reverse=True)
 
     return oc
 
