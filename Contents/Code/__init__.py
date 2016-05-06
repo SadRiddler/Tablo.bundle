@@ -54,11 +54,11 @@ def Start():
     # Object / Directory / VideoClip setup
     ObjectContainer.title1 = TITLE
     ObjectContainer.view_group = 'InfoList'
-    ObjectContainer.art = R(ART)
+    #ObjectContainer.art = R(ART)
     DirectoryObject.thumb = R(NOTV_ICON)
-    DirectoryObject.art = R(ART)
+    #DirectoryObject.art = R(ART)
     VideoClipObject.thumb = R(NOTV_ICON)
-    VideoClipObject.art = R(ART)
+    #VideoClipObject.art = R(ART)
 
     # HTTP setup
     HTTP.CacheTime = CACHE_1HOUR
@@ -1042,7 +1042,7 @@ def getepisode(episodeDict):
     return EpisodeObject(
             art=episodeDict['backgroundart'],
             url=Encodeobj('TabloRecording', episodeDict),
-            title=episodeDict['title'],
+            title=getExtendedTitle(episodeDict['title'], episodeDict['airdate'], 0, 0),
             season=episodeDict['seasonnum'],
             index=episodeDict['episodenum'],
             summary=episodeDict['summary'],
