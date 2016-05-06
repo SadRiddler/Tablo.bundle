@@ -1042,7 +1042,7 @@ def getepisode(episodeDict):
     return EpisodeObject(
             art=episodeDict['backgroundart'],
             url=Encodeobj('TabloRecording', episodeDict),
-            title=getExtendedTitle(episodeDict['title'], episodeDict['airdate'], 0, 0),
+            title=episodeDict['title'],
             season=episodeDict['seasonnum'],
             index=episodeDict['episodenum'],
             summary=episodeDict['summary'],
