@@ -54,11 +54,11 @@ def Start():
     # Object / Directory / VideoClip setup
     ObjectContainer.title1 = TITLE
     ObjectContainer.view_group = 'InfoList'
-    #ObjectContainer.art = R(ART)
+    ObjectContainer.art = R(ART)
     DirectoryObject.thumb = R(NOTV_ICON)
-    #DirectoryObject.art = R(ART)
+    DirectoryObject.art = R(ART)
     VideoClipObject.thumb = R(NOTV_ICON)
-    #VideoClipObject.art = R(ART)
+    VideoClipObject.art = R(ART)
 
     # HTTP setup
     HTTP.CacheTime = CACHE_1HOUR
