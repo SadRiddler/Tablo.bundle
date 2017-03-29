@@ -296,6 +296,7 @@ def scheduled(title):
         if 'images' in airingData:
             imagedid = airingData['images'][0]['imageID']
         plexlog('airingdata loop', airingData)
+        plexlog('unixtimestarted', str(Datetime.FromTimestamp(unixtimestarted)))
         # All commented out are set in TabloLive.pys helpers
         oc.add(
                 # TVShowObject(
@@ -311,7 +312,7 @@ def scheduled(title):
                         thumb=Resource.ContentsOfURLWithFallback(
                             url='http://' + ipaddress + ':18080/stream/thumb?id=' + str(imagedid), fallback=NOTV_ICON),
                         # art= Resource.ContentsOfURLWithFallback(url=airingData['art'], fallback=ART),
-                        tagline=unixtimestarted
+                        tagline=str(Datetime.FromTimestamp(unixtimestarted))
                         # duration = airingData['duration']  #description = airingData['description']
                 )
         )
@@ -929,7 +930,8 @@ def episodes(title, seriesid, seasonnum):
 
             except Exception as e:
                 Log(" Failed on episode " + str(e))
-    oc.objects.sort(key=lambda obj: obj.index)
+    # sort by reverse air date, newest first
+    oc.objects.sort(key=lambda obj: obj.originally_available_at, reverse=True)
 
     return oc
 
@@ -1269,6 +1271,30 @@ def loadData():
 
 
 '''#########################################
+    Name: getExtendedTitle()
+
+    Parameters: name: String, airdate: String, en: Integer, sn: Integer
+
+    Purpose: Add month/day and season/episode number to generic title
+
+    Returns: String
+
+    Notes:
+#########################################'''
+
+def getExtendedTitle(name, airdate, en=0, sn=0):
+    dt = Datetime.ParseDate(airdate)
+    mmdd = dt.strftime("%m/%d")
+    if sn != 0 and en != 0:
+        se = ' s{0}e{1}'.format(sn,en)
+    else:
+        se = ''
+    title = '{0} ({1}{2})'.format(name,mmdd,se)
+    Log(LOG_PREFIX + 'ext title = ' + title)
+    return title
+
+
+'''#########################################
     Name: getEpisodeDict()
 
     Parameters: None
@@ -1331,6 +1357,13 @@ def getEpisodeDict(ipaddress, episodeID, UseMeta):
             if 'title' in seriesinfo:
                 recordingDict['showname'] = seriesinfo['title']
                 recordingDict['title'] = seriesinfo['title']
+                # if we have the air date, then add it to the generic title
+                # since it helps distinguish shows with no distinct episode title
+                # like 'NBC Nightly News' and no default date ordering of episodes
+                if 'jsonForClient' in recordinginfo[root]:
+                    episodeinfo = recordinginfo[root]['jsonForClient']
+                    if 'airDate' in episodeinfo:
+                        recordingDict['title'] = getExtendedTitle(seriesinfo['title'], episodeinfo['airDate'])
             else:
                 recordingDict['showname'] = ''
             recordingDict['seriesdesc'] = ''
